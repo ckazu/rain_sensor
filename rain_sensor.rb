@@ -108,8 +108,8 @@ class RainSensor
   end
 end
 
-rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID)
-p rs.result_text
+#rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID)
+#p rs.result_text
 
 ## todo: method にする
 #
