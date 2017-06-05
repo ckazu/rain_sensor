@@ -1,4 +1,4 @@
-require_relative '../rain_sensor.rb'
+require_relative '../lib/rain_sensor.rb'
 require 'minitest/autorun'
 require 'minitest/color'
 require 'minitest/power_assert'
@@ -74,6 +74,16 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>100.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
       assert { rs.result == "雨は止みました\n1時間以内に `激しい雨` が降り出しそうです" }
+    end
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>0.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>0.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>0.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
+      assert { rs.result == nil }
     end
   end
 
