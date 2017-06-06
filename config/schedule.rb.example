@@ -1,3 +1,3 @@
 every 10.minutes do
-  command 'source .env; bundle exec ruby rain_forcast_to_slack.rb'
+  command 'source .env; bundle exec ruby rain_forecast_to_slack.rb'
 end
