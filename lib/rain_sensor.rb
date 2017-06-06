@@ -33,7 +33,8 @@ class RainSensor
 
   def response
     # todo: error handling
-    @response ||= conn.get "/weather/V1/place?output=json&past=1&coordinates=#{@coordinates}&appid=#{@yahoo_app_id}"
+    # todo: configure of query strings
+    @response ||= conn.get "/weather/V1/place?output=json&past=1&interval=5&coordinates=#{@coordinates}&appid=#{@yahoo_app_id}"
   end
 
   def weather
