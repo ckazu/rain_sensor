@@ -13,7 +13,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
-      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\nこのままの雨がしばらく続くでしょう (12.0 mm/h)" }
+      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています" }
     end
 
     rs.stub :weather,
@@ -23,7 +23,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>8.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>6.0}] do
-      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まるでしょう (8.67 mm/h)" }
+      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まる:arrow_lower_right:でしょう (8.67 mm/h)" }
     end
 
     rs.stub :weather,
@@ -33,7 +33,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>14.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>16.0}] do
-      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に強まるでしょう (14.0 mm/h)" }
+      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に強まる:arrow_upper_right:でしょう (14.0 mm/h)" }
     end
 
     rs.stub :weather,
@@ -43,7 +43,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
-      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まるでしょう (8.0 mm/h)\n1時間以内には止む見込みです" }
+      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まる:arrow_lower_right:でしょう (8.0 mm/h)\n1時間以内には止む見込みです" }
     end
 
     rs.stub :weather,
@@ -53,7 +53,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
-      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まるでしょう (8.0 mm/h)\n1時間以内には止む見込みです" }
+      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まる:arrow_lower_right:でしょう (8.0 mm/h)\n1時間以内には止む見込みです" }
     end
 
     rs.stub :weather,
@@ -63,7 +63,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>0.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>0.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
-      assert { rs.result == "雨は止みました" }
+      assert { rs.result == ":barely_sunny: 雨は止みました" }
     end
 
     rs.stub :weather,
@@ -73,7 +73,7 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>0.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>100.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
-      assert { rs.result == "雨は止みました\n1時間以内に `激しい雨` が降り出しそうです" }
+      assert { rs.result == ":barely_sunny: 雨は止みました\n1時間以内に `激しい雨` が降り出しそうです" }
     end
 
     rs.stub :weather,
@@ -193,18 +193,18 @@ class RainSensorDecoratorTest < Minitest::Test
     rsd = RainSensor::Decorator.new(Object)
     assert { rsd.just_sunny(0, 0) == nil }
     assert { rsd.just_sunny(0, 10) == nil }
-    assert { rsd.just_sunny(10, 0) == "雨は止みました" }
+    assert { rsd.just_sunny(10, 0) == ":barely_sunny: 雨は止みました" }
     assert { rsd.just_sunny(10, 10) == nil }
   end
 
   def test_forecast
     rsd = RainSensor::Decorator.new(Object, forecast_delta: 1.0)
     assert { rsd.forecast(0.0, 10) == nil }
-    assert { rsd.forecast(10.0, 8.999) == "雨の勢いは次第に弱まるでしょう (9.0 mm/h)" }
-    assert { rsd.forecast(10.0, 9) == "このままの雨がしばらく続くでしょう (9.0 mm/h)" }
-    assert { rsd.forecast(10.0, 10.999) == "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
-    assert { rsd.forecast(10.0, 11.0) == "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
-    assert { rsd.forecast(10.0, 11.00001) == "雨の勢いは次第に強まるでしょう (11.0 mm/h)" }
-    assert { rsd.forecast(10.0, 11.005) == "雨の勢いは次第に強まるでしょう (11.01 mm/h)" }
+    assert { rsd.forecast(10.0, 8.999) == "雨の勢いは次第に弱まる:arrow_lower_right:でしょう (9.0 mm/h)" }
+    assert { rsd.forecast(10.0, 9) == nil } # "このままの雨がしばらく続くでしょう (9.0 mm/h)" }
+    assert { rsd.forecast(10.0, 10.999) == nil } # "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
+    assert { rsd.forecast(10.0, 11.0) == nil } # "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
+    assert { rsd.forecast(10.0, 11.00001) == "雨の勢いは次第に強まる:arrow_upper_right:でしょう (11.0 mm/h)" }
+    assert { rsd.forecast(10.0, 11.005) == "雨の勢いは次第に強まる:arrow_upper_right:でしょう (11.01 mm/h)" }
   end
 end

@@ -6,8 +6,8 @@ class RainSensor
     @coordinates, @yahoo_app_id = coordinates, yahoo_app_id
   end
 
-  def result
-    Decorator.new(self).report
+  def result(opts: {})
+    Decorator.new(self, opts).report
   end
 
   def current_rainfall
@@ -34,7 +34,7 @@ class RainSensor
   def response
     # todo: error handling
     # todo: configure of query strings
-    @response ||= conn.get "/weather/V1/place?output=json&past=1&interval=5&coordinates=#{@coordinates}&appid=#{@yahoo_app_id}"
+    @response ||= conn.get "/weather/V1/place?output=json&past=1&interval=10&coordinates=#{@coordinates}&appid=#{@yahoo_app_id}"
   end
 
   def weather
@@ -97,7 +97,7 @@ class RainSensor
     end
 
     def just_sunny(before, now)
-      "雨は止みました" if before > 0.0 && now <= 0.0
+      ":barely_sunny: 雨は止みました" if before > 0.0 && now <= 0.0
     end
 
     def will_rainy(now, forecast)
@@ -115,11 +115,11 @@ class RainSensor
     def forecast(now, average_of_forecast)
       return if now <= 0.0
       if ((now - @forecast_delta)..(now + @forecast_delta)).include? average_of_forecast
-        "このままの雨がしばらく続くでしょう (#{average_of_forecast.round(2)} mm/h)"
+        nil # "このままの雨がしばらく続くでしょう (#{average_of_forecast.round(2)} mm/h)"
       elsif now < average_of_forecast
-        "雨の勢いは次第に強まるでしょう (#{average_of_forecast.round(2)} mm/h)"
+        "雨の勢いは次第に強まる:arrow_upper_right:でしょう (#{average_of_forecast.round(2)} mm/h)"
       else
-        "雨の勢いは次第に弱まるでしょう (#{average_of_forecast.round(2)} mm/h)"
+        "雨の勢いは次第に弱まる:arrow_lower_right:でしょう (#{average_of_forecast.round(2)} mm/h)"
       end
     end
   end

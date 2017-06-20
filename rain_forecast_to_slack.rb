@@ -15,7 +15,7 @@ end
 
 begin
   rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID)
-  result = rs.result
+  result = rs.result(forecast_delta: 2.50)
 
   unless result
     $stdout.puts "It is not raining at #{LOCATION_NAME}."
