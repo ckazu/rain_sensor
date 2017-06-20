@@ -210,12 +210,12 @@ class RainSensorDecoratorTest < Minitest::Test
 
   def test_forecast
     rsd = RainSensor::Decorator.new(Object, forecast_delta: 1.0)
-    assert { rsd.forecast(0.0, 10) == nil }
-    assert { rsd.forecast(10.0, 8.999) == "雨の勢いは次第に弱まる:arrow_lower_right:でしょう (9.0 mm/h)" }
-    assert { rsd.forecast(10.0, 9) == nil } # "このままの雨がしばらく続くでしょう (9.0 mm/h)" }
-    assert { rsd.forecast(10.0, 10.999) == nil } # "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
-    assert { rsd.forecast(10.0, 11.0) == nil } # "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
-    assert { rsd.forecast(10.0, 11.00001) == "雨の勢いは次第に強まる:arrow_upper_right:でしょう (11.0 mm/h)" }
-    assert { rsd.forecast(10.0, 11.005) == "雨の勢いは次第に強まる:arrow_upper_right:でしょう (11.01 mm/h)" }
+    assert { rsd.forecast_message(0.0, 10) == nil }
+    assert { rsd.forecast_message(10.0, 8.999) == "雨の勢いは次第に弱まる:arrow_lower_right:でしょう (9.0 mm/h)" }
+    assert { rsd.forecast_message(10.0, 9) == nil } # "このままの雨がしばらく続くでしょう (9.0 mm/h)" }
+    assert { rsd.forecast_message(10.0, 10.999) == nil } # "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
+    assert { rsd.forecast_message(10.0, 11.0) == nil } # "このままの雨がしばらく続くでしょう (11.0 mm/h)" }
+    assert { rsd.forecast_message(10.0, 11.00001) == "雨の勢いは次第に強まる:arrow_upper_right:でしょう (11.0 mm/h)" }
+    assert { rsd.forecast_message(10.0, 11.005) == "雨の勢いは次第に強まる:arrow_upper_right:でしょう (11.01 mm/h)" }
   end
 end

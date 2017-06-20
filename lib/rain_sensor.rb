@@ -66,7 +66,7 @@ class RainSensor
       text << just_sunny(recently, current)
       text << will_rainy(current, forecast)
       text << now_rainfall(current)
-      text << forecast(current, forecast)
+      text << forecast_message(current, forecast)
       text << will_sunny(current, forecast_after_one_hour)
 
       #text << text_of_will_stop(@rsforecasts.last['Rainfall']) or text_of_prediction(@rs.now, @rs.predict)
@@ -93,34 +93,68 @@ class RainSensor
     end
 
     # FIXME: 判定部分が decorator にあるのはおかしいので分離する
-    def just_rain(before, now)
-      "雨が降り始めました" if before <= 0.0 && now > 0.0
+    def just_rain?(before, now)
+      before <= 0.0 && now > 0.0
     end
 
-    def just_sunny(before, now)
-      ":barely_sunny: 雨は止みました" if before > 0.0 && now <= 0.0
+    def just_sunny?(before, now)
+      before > 0.0 && now <= 0.0
     end
 
-    def will_rainy(now, forecast)
-      "1時間以内に `#{rainfall_type(forecast)}` が降り出しそうです" if now <= 0.0 && forecast >= 0.2 # FIXME: 0.2
+    def will_rainy?(now, forecast)
+      now <= 0.0 && forecast >= 0.2 # FIXME: 0.2
     end
 
-    def now_rainfall(rainfall)
-      "現在 #{rainfall} mm/h の `#{rainfall_type(rainfall)}` が降っています" if rainfall > 0.0
+    def now_rainfall?(rainfall)
+      rainfall > 0.0
     end
 
-    def will_sunny(now, forecast)
-      "1時間以内には止む見込みです" if now > 0.0 && forecast <= 0.0
+    def will_sunny?(now, forecast)
+      now > 0.0 && forecast <= 0.0
     end
 
     def forecast(now, average_of_forecast)
       return if now <= 0.0
       if ((now - @forecast_delta)..(now + @forecast_delta)).include? average_of_forecast
-        nil # "このままの雨がしばらく続くでしょう (#{average_of_forecast.round(2)} mm/h)"
+        :keep
       elsif now < average_of_forecast
-        "雨の勢いは次第に強まる:arrow_upper_right:でしょう (#{average_of_forecast.round(2)} mm/h)"
+        :heavier
       else
+        :lighter
+      end
+    end
+
+    # FIXME: 引数をとらなくて良いようにする
+    def just_rain(before, now)
+      "雨が降り始めました" if just_rain?(before, now)
+    end
+
+    def just_sunny(before, now)
+      ":barely_sunny: 雨は止みました" if just_sunny?(before, now)
+    end
+
+    def will_rainy(now, forecast)
+      "1時間以内に `#{rainfall_type(forecast)}` が降り出しそうです" if will_rainy?(now, forecast)
+    end
+
+    def now_rainfall(rainfall)
+      "現在 #{rainfall} mm/h の `#{rainfall_type(rainfall)}` が降っています" if now_rainfall?(rainfall)
+    end
+
+    def will_sunny(now, forecast)
+      "1時間以内には止む見込みです" if will_sunny?(now, forecast)
+    end
+
+    def forecast_message(now, average_of_forecast)
+      case forecast(now, average_of_forecast)
+      when :keep
+        nil # "このままの雨がしばらく続くでしょう (#{average_of_forecast.round(2)} mm/h)"
+      when :heavier
+        "雨の勢いは次第に強まる:arrow_upper_right:でしょう (#{average_of_forecast.round(2)} mm/h)"
+      when :lighter
         "雨の勢いは次第に弱まる:arrow_lower_right:でしょう (#{average_of_forecast.round(2)} mm/h)"
+      else
+        nil
       end
     end
   end
