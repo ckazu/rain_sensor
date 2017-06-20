@@ -2,12 +2,12 @@ require 'json'
 require 'faraday'
 
 class RainSensor
-  def initialize(coordinates:, yahoo_app_id:)
-    @coordinates, @yahoo_app_id = coordinates, yahoo_app_id
+  def initialize(coordinates:, yahoo_app_id:, tmpfile:)
+    @coordinates, @yahoo_app_id, @tmpfile = coordinates, yahoo_app_id, tmpfile
   end
 
   def result(opts: {})
-    Decorator.new(self, opts).report
+    Decorator.new(self, opts.merge({tmpfile: @tmpfile})).report
   end
 
   def current_rainfall
@@ -50,9 +50,10 @@ class RainSensor
   end
 
   class Decorator
-    def initialize(rain_sensor, forecast_delta: 0.2)
+    def initialize(rain_sensor, forecast_delta: 0.2, tmpfile: 'tmp/state.rb')
       @rs = rain_sensor
       @forecast_delta = forecast_delta
+      @tmpfile = tmpfile
     end
 
     def report

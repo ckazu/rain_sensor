@@ -5,8 +5,8 @@ require 'minitest/power_assert'
 
 class RainSensorTest < Minitest::Test
   def test_result
-    File.open('tmp/state.dat', 'w')
-    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+    File.open('tmp/test.dat', 'w')
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object, tmpfile: 'tmp/test.dat')
 
     rs.stub :weather,
             [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
@@ -115,8 +115,8 @@ class RainSensorTest < Minitest::Test
 
   # FIXME
   def test_state
-    File.open('tmp/state.dat', 'w')
-    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+    File.open('tmp/test.dat', 'w')
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object, tmpfile: 'tmp/test.dat')
 
     rs.stub :weather,
             [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
@@ -181,7 +181,7 @@ class RainSensorTest < Minitest::Test
   end
 
   def test_current_rainfall
-    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object, tmpfile: 'tmp/test.dat')
     res = [
       {"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>12.0},
       {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>9.0},
@@ -194,7 +194,7 @@ class RainSensorTest < Minitest::Test
   end
 
   def test_recently_rainfall
-    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object, tmpfile: 'tmp/test.dat')
     res = [
       {"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>12.0},
       {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>9.0},
@@ -207,7 +207,7 @@ class RainSensorTest < Minitest::Test
   end
 
   def test_forecast_rainfall
-    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object, tmpfile: 'tmp/test.dat')
     res = [
       {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>9.0},
       {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>1.01},
@@ -222,7 +222,7 @@ class RainSensorTest < Minitest::Test
   end
 
   def test_forecast_after_one_hour_rainfall
-    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object, tmpfile: 'tmp/test.dat')
     res = [
       {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>9.0},
       {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>1.0},
