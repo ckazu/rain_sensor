@@ -23,7 +23,7 @@ class RainSensor
   end
 
   def forecast_after_one_hour_rainfall
-    forecasts.last['Rainfall']
+    forecasts.last(3).inject(0.0) {|sum, w| sum += w['Rainfall'] } / 3.0
   end
 
   private
