@@ -7,6 +7,7 @@ SLACK_ERROR_NOTIFY_TO = ENV['SLACK_ERROR_NOTIFY_TO']
 YAHOO_APP_ID = ENV['YAHOO_APP_ID']
 LOCATION_COORDINATES = ENV['LOCATION_COORDINATES'] # ex) 139.700306,35.689407
 LOCATION_NAME = ENV['LOCATION_NAME'] # 表示用テキスト
+TMPFILE= ENV['TMPFILE']
 
 def send_to_slack(access_token, text, opts)
   notifier = Slack::Notifier.new(access_token)
@@ -14,7 +15,7 @@ def send_to_slack(access_token, text, opts)
 end
 
 begin
-  rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID)
+  rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID, tmpfile: "tmp/")
   result = rs.result(forecast_delta: 2.50)
 
   unless result
