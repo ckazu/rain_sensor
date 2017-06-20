@@ -69,7 +69,6 @@ class RainSensor
       text << forecast_message(current, forecast)
       text << will_sunny(current, forecast_after_one_hour)
 
-      #text << text_of_will_stop(@rsforecasts.last['Rainfall']) or text_of_prediction(@rs.now, @rs.predict)
       if text.compact.empty?
         nil
       else
