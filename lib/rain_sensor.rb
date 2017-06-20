@@ -76,7 +76,7 @@ class RainSensor
       state << just_rain?(recently, current)
       state << just_sunny?(recently, current)
       state << will_rainy?(current, forecast)
-      state << now_rainfall?(current)
+      state << current_rainfall(current)
       state << forecast(current, forecast)
       state << will_sunny?(current, forecast_after_one_hour)
 
@@ -116,12 +116,12 @@ class RainSensor
       now <= 0.0 && forecast >= 0.2 # FIXME: 0.2
     end
 
-    def now_rainfall?(rainfall)
-      rainfall > 0.0
-    end
-
     def will_sunny?(now, forecast)
       now > 0.0 && forecast <= 0.0
+    end
+
+    def current_rainfall(rainfall)
+      [(rainfall > 0.0), rainfall_type(rainfall)]
     end
 
     def forecast(now, average_of_forecast)
@@ -149,7 +149,7 @@ class RainSensor
     end
 
     def now_rainfall(rainfall)
-      "現在 #{rainfall} mm/h の `#{rainfall_type(rainfall)}` が降っています" if now_rainfall?(rainfall)
+      "現在 #{rainfall} mm/h の `#{rainfall_type(rainfall)}` が降っています" if current_rainfall(rainfall)[0]
     end
 
     def will_sunny(now, forecast)

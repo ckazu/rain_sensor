@@ -113,6 +113,7 @@ class RainSensorTest < Minitest::Test
     end
   end
 
+  # FIXME
   def test_state
     File.open('tmp/state.dat', 'w')
     rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
@@ -145,6 +146,37 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
       assert { rs.result == nil }
+    end
+
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>12.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>12.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
+      assert { rs.result == "現在 12.0 mm/h の `やや強い雨` が降っています" }
+    end
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>12.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>12.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
+      assert { rs.result == nil }
+    end
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>20.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>20.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>20.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>20.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>20.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>20.0}] do
+      assert { rs.result == "現在 20.0 mm/h の `強い雨` が降っています" }
     end
   end
 
@@ -193,14 +225,14 @@ class RainSensorTest < Minitest::Test
     rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
     res = [
       {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>9.0},
-      {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>1.01},
-      {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>2.01},
-      {"Type"=>"forecast", "Date"=>"201706052005", "Rainfall"=>5.01},
+      {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>1.0},
+      {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>2.0},
+      {"Type"=>"forecast", "Date"=>"201706052005", "Rainfall"=>5.0},
       {"Type"=>"forecast", "Date"=>"201706051955", "Rainfall"=>0.0},
-      {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>2.01}
+      {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>4.0}
     ]
     rs.stub :weather, res do
-      assert { rs.forecast_after_one_hour_rainfall == 5.01 }
+      assert { rs.forecast_after_one_hour_rainfall == 3.0 }
     end
   end
 end
