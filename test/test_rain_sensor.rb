@@ -58,16 +58,6 @@ class RainSensorTest < Minitest::Test
     end
 
     rs.stub :weather,
-            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
-             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
-             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>12.0},
-             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
-             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
-             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
-      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています\n雨の勢いは次第に弱まる:arrow_lower_right:でしょう (8.0 mm/h)\n1時間以内には止む見込みです" }
-    end
-
-    rs.stub :weather,
             [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>20.0},
              {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>12.0},
              {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>0.0},
