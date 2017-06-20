@@ -92,6 +92,7 @@ class RainSensor
       end
     end
 
+    # FIXME: 判定部分が decorator にあるのはおかしいので分離する
     def just_rain(before, now)
       "雨が降り始めました" if before <= 0.0 && now > 0.0
     end
@@ -101,7 +102,7 @@ class RainSensor
     end
 
     def will_rainy(now, forecast)
-      "1時間以内に `#{rainfall_type(forecast)}` が降り出しそうです" if now <= 0.0 && forecast > 0.0
+      "1時間以内に `#{rainfall_type(forecast)}` が降り出しそうです" if now <= 0.0 && forecast >= 0.2 # FIXME: 0.2
     end
 
     def now_rainfall(rainfall)
