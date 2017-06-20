@@ -69,11 +69,23 @@ class RainSensor
       text << forecast_message(current, forecast)
       text << will_sunny(current, forecast_after_one_hour)
 
-      if text.compact.empty?
-        nil
-      else
-        text.compact.join("\n")
-      end
+      return if text.compact.empty?
+
+      # FIXME: 色々ちゃんと考える
+      state = []
+      state << just_rain?(recently, current)
+      state << just_sunny?(recently, current)
+      state << will_rainy?(current, forecast)
+      state << now_rainfall?(current)
+      state << forecast(current, forecast)
+      state << will_sunny?(current, forecast_after_one_hour)
+
+      before_state = File.open('tmp/state.dat').read.chomp
+
+      return if state.inspect == before_state
+      File.open('tmp/state.dat', 'w') {|file| file.puts state.inspect }
+
+      text.compact.join("\n")
     end
 
     def rainfall_type(rainfall)

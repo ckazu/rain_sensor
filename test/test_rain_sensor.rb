@@ -5,6 +5,7 @@ require 'minitest/power_assert'
 
 class RainSensorTest < Minitest::Test
   def test_result
+    File.open('tmp/state.dat', 'w')
     rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
 
     rs.stub :weather,
@@ -84,6 +85,41 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>0.0},
              {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>0.0},
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
+      assert { rs.result == nil }
+    end
+  end
+
+  def test_state
+    File.open('tmp/state.dat', 'w')
+    rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
+      assert { rs.result == "雨が降り始めました\n現在 12.0 mm/h の `やや強い雨` が降っています" }
+    end
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
+      assert { rs.result == nil }
+    end
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>12.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>12.0}] do
       assert { rs.result == nil }
     end
   end
