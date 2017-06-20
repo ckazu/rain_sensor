@@ -6,8 +6,8 @@ class RainSensor
     @coordinates, @yahoo_app_id, @tmpfile = coordinates, yahoo_app_id, tmpfile
   end
 
-  def result(opts: {})
-    Decorator.new(self, opts.merge({tmpfile: @tmpfile})).report
+  def result(forecast_delta: 0.2, tmpfile: @tmpfile)
+    Decorator.new(self, forecast_delta: forecast_delta, tmpfile: tmpfile).report
   end
 
   def current_rainfall
@@ -50,7 +50,7 @@ class RainSensor
   end
 
   class Decorator
-    def initialize(rain_sensor, forecast_delta: 0.2, tmpfile: 'tmp/state.rb')
+    def initialize(rain_sensor, forecast_delta: 0.2, tmpfile: 'tmp/state.dat')
       @rs = rain_sensor
       @forecast_delta = forecast_delta
       @tmpfile = tmpfile
@@ -81,10 +81,10 @@ class RainSensor
       state << forecast(current, forecast)
       state << will_sunny?(current, forecast_after_one_hour)
 
-      before_state = File.open('tmp/state.dat').read.chomp
+      before_state = File.open(@tmpfile).read.chomp
 
       return if state.inspect == before_state
-      File.open('tmp/state.dat', 'w') {|file| file.puts state.inspect }
+      File.open(@tmpfile, 'w') {|file| file.puts state.inspect }
 
       text.compact.join("\n")
     end

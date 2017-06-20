@@ -15,7 +15,7 @@ def send_to_slack(access_token, text, opts)
 end
 
 begin
-  rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID, tmpfile: "tmp/")
+  rs = RainSensor.new(coordinates: LOCATION_COORDINATES, yahoo_app_id: YAHOO_APP_ID, tmpfile: TMPFILE)
   result = rs.result(forecast_delta: 2.50)
 
   unless result
