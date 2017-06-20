@@ -6,6 +6,17 @@ require 'minitest/power_assert'
 class RainSensorTest < Minitest::Test
   def test_result
     rs = RainSensor.new(coordinates: Object, yahoo_app_id: Object)
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>0.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>0.2},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>0.1},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.3}] do
+      assert { rs.result == "1時間以内に `弱い雨` が降り出しそうです" }
+    end
+
     rs.stub :weather,
             [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>0.0},
              {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>0.0},
