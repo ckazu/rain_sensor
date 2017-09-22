@@ -1,5 +1,6 @@
 require 'json'
 require 'faraday'
+require 'sparkr'
 
 class RainSensor
   def initialize(coordinates:, yahoo_app_id:, tmpfile:)
@@ -8,6 +9,10 @@ class RainSensor
 
   def result(forecast_delta: 0.2, tmpfile: @tmpfile)
     Decorator.new(self, forecast_delta: forecast_delta, tmpfile: tmpfile).report
+  end
+
+  def sparkline
+    Sparkr.sparkline weather.map {|w| [w['Rainfall']] * 3 }.flatten
   end
 
   def current_rainfall
@@ -86,6 +91,7 @@ class RainSensor
       return if state.inspect == before_state
       File.open(@tmpfile, 'w') {|file| file.puts state.inspect }
 
+      text << @rs.sparkline
       text.compact.join("\n")
     end
 
