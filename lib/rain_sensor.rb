@@ -32,7 +32,18 @@ class RainSensor
     forecasts.last(3).inject(0.0) {|sum, w| sum += w['Rainfall'] } / 3.0
   end
 
+  def map_url
+    lon, lat = @coordinates.split(',')
+    conn = Faraday::Connection.new(url: 'http://tinyurl.com')
+    res = conn.get do |req|
+      req.url '/api-create.php'
+      req.params[:url] = "https://map.yahooapis.jp/map/V1/static?appid=#{@yahoo_app_id}&lat=#{lat}&lon=#{lon}&z=12&width=300&height=300&mode=map&pointer=on&overlay=type:rainfall|datelabel:on&time=#{Time.now.to_i}"
+    end
+    res.body
+  end
+
   private
+
   def conn
     @conn ||= Faraday::Connection.new(:url => 'https://map.yahooapis.jp')
   end
@@ -93,6 +104,7 @@ class RainSensor
       File.open(@tmpfile, 'w') {|file| file.puts state.inspect }
 
       text << @rs.sparkline
+      text << @rs.map_url
       text.compact.join("\n")
     end
 
