@@ -12,7 +12,8 @@ class RainSensor
   end
 
   def sparkline
-    Sparkr.sparkline weather.map {|w| [w['Rainfall']] * 3 }.flatten
+    now = observations.count
+    Sparkr.sparkline(weather.map {|w| w['Rainfall'] }).insert(now, ' | ')
   end
 
   def current_rainfall
