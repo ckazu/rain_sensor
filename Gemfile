@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'faraday'
 gem 'slack-notifier'
+gem 'sparkr'
 gem 'whenever'
 
 group :development do

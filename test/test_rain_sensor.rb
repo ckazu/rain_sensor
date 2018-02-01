@@ -111,7 +111,18 @@ class RainSensorTest < Minitest::Test
              {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
       assert { rs.result == nil }
     end
+
+    rs.stub :weather,
+            [{"Type"=>"observation", "Date"=>"201706051855", "Rainfall"=>20.0},
+             {"Type"=>"observation", "Date"=>"201706051905", "Rainfall"=>12.0},
+             {"Type"=>"observation", "Date"=>"201706051915", "Rainfall"=>0.0},
+             {"Type"=>"forecast", "Date"=>"201706051925", "Rainfall"=>0.0},
+             {"Type"=>"forecast", "Date"=>"201706051935", "Rainfall"=>30.0},
+             {"Type"=>"forecast", "Date"=>"201706051945", "Rainfall"=>0.0}] do
+      assert { rs.sparkline == "hoge" }
+    end
   end
+
 
   # FIXME
   def test_state
